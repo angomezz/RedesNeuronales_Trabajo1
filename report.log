@@ -1,0 +1,3 @@
+2026-10-13 15:35:27,927 - matplotlib.animation - INFO - Animation.save using <class 'matplotlib.animation.PillowWriter'>
+2026-10-13 15:37:26,655 - matplotlib.animation - WARNING - MovieWriter imagemagick unavailable; using Pillow instead.
+2026-10-13 15:37:26,656 - matplotlib.animation - INFO - Animation.save using <class 'matplotlib.animation.PillowWriter'>

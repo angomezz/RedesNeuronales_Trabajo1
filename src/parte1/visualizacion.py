@@ -113,7 +113,7 @@ def crear_animacion_pso_rosenbrock(
 
     limits = [(-2, 2), (-1, 3)]
     mesher = Mesher(
-        func=objective,
+        func=lambda x: objective_wrapper(x, objective),
         limits=limits,
         levels=np.logspace(-1, 3.5, 25),
     )
