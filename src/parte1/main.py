@@ -23,6 +23,8 @@ import pyswarms as ps
 from pyswarms.utils.functions import single_obj as fx
 from IPython.display import Image
 
+np.random.seed(56)
+
 
 # =============================================================================
 # 2. CONTADORES GLOBALES DE EVALUACIÓN
@@ -294,6 +296,7 @@ valores_optimos = []
 for i in range(num_corridas):
     contador_rosenbrock = 0
     contador_grad = 0
+    np.random.seed(56 + i)
     x0 = np.random.uniform(-2, 2, dim)
     trayectoria = grad_desc(x0, grad_fun=grad_rosenbrock, max_iter=max_iter, learning_rate=learning_rate)
     optimo_encontrado = trayectoria[-1]
@@ -322,6 +325,7 @@ options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
 
 for i in range(num_corridas):
     contador_rosenbrock = 0
+    np.random.seed(56 + i)
     optimizer = ps.single.GlobalBestPSO(n_particles=n_particles, dimensions=dim, options=options, bounds=bounds)
     best_cost, best_pos = optimizer.optimize(lambda X: pyswarm_wrapper(X, rosenbrock), iters=iters, verbose=False)
     valores_optimos_pso.append(best_cost)
@@ -423,6 +427,7 @@ for i in range(num_corridas):
     contador_rosenbrock = 0
     contador_grad = 0
 
+    np.random.seed(56 + i)
     x0 = np.random.uniform(-2, 2, dim)
     trayectoria = grad_desc(x0, grad_fun=grad_rosenbrock, max_iter=max_iter, learning_rate=learning_rate)
 
@@ -458,6 +463,7 @@ options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
 
 for i in range(num_corridas):
     contador_rosenbrock = 0
+    np.random.seed(56 + i)
     optimizer = ps.single.GlobalBestPSO(n_particles=n_particles, dimensions=dim, options=options, bounds=bounds)
     best_cost, best_pos = optimizer.optimize(lambda X: pyswarm_wrapper(X, rosenbrock), iters=iters, verbose=False)
 
@@ -564,6 +570,7 @@ for i in range(num_corridas):
     contador_schwefel = 0
     contador_grad = 0
 
+    np.random.seed(56 + i)
     x0 = np.random.uniform(-500, 500, dim)
     trayectoria = grad_desc(
         x0,
@@ -600,6 +607,7 @@ options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
 for i in range(num_corridas):
     contador_schwefel = 0
 
+    np.random.seed(56 + i)
     optimizer = ps.single.GlobalBestPSO(
         n_particles=n_particles, dimensions=dim, options=options, bounds=bounds
     )
@@ -709,6 +717,7 @@ for i in range(num_corridas):
     contador_schwefel = 0
     contador_grad = 0
 
+    np.random.seed(56 + i)
     x0 = np.random.uniform(-500, 500, dim)
 
     trayectoria = grad_desc(
@@ -746,6 +755,7 @@ options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
 for i in range(num_corridas):
     contador_schwefel = 0
 
+    np.random.seed(56 + i)
     optimizer = ps.single.GlobalBestPSO(
         n_particles=n_particles, dimensions=dim, options=options, bounds=bounds
     )
@@ -899,7 +909,7 @@ def animar_gd(trayectoria, f_xy, dominio, minimo, nombre_gif,
 
 
 # ---------- Animación Descenso por Gradiente (Rosenbrock) ----------
-rng = np.random.default_rng(0)
+rng = np.random.default_rng(56)
 x0 = rng.uniform(-2, 2, 2)
 
 trayectoria = grad_desc(x0, grad_fun=grad_rosenbrock, max_iter=20000, learning_rate=0.001)
@@ -916,6 +926,7 @@ animar_gd(
 Image(filename='gd_rosenbrock.gif')
 
 # ---------- Animación Superficie 3D PSO (Rosenbrock) ----------
+np.random.seed(56)
 options1 = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
 bounds = (np.array([-2, -1]), np.array([2, 3]))
 optimizer1 = ps.single.GlobalBestPSO(n_particles=50, dimensions=2,
