@@ -1,0 +1,21 @@
+{
+  "place_id": 293023469,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 346397,
+  "lat": "43.3533452",
+  "lon": "-5.8795096",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.63342010644616,
+  "addresstype": "city",
+  "name": "Oviedo",
+  "display_name": "Oviedo, Asturias / Asturies, España",
+  "boundingbox": [
+    "43.2791441",
+    "43.4273246",
+    "-6.0169359",
+    "-5.7423940"
+  ]
+}

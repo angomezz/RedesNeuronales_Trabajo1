@@ -1,0 +1,21 @@
+{
+  "place_id": 299520741,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 347573,
+  "lat": "41.9951569",
+  "lon": "-4.5442676",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.593198311599454,
+  "addresstype": "city",
+  "name": "Palencia",
+  "display_name": "Palencia, Castilla y León, España",
+  "boundingbox": [
+    "41.9194281",
+    "42.0712126",
+    "-4.6543431",
+    "-4.4817671"
+  ]
+}

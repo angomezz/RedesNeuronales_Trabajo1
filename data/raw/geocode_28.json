@@ -1,0 +1,21 @@
+{
+  "place_id": 293454952,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 345264,
+  "lat": "42.9913123",
+  "lon": "-7.5908294",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.5833465588959991,
+  "addresstype": "municipality",
+  "name": "Lugo",
+  "display_name": "Lugo, Galicia, España",
+  "boundingbox": [
+    "42.8832995",
+    "43.0987185",
+    "-7.7352688",
+    "-7.4059843"
+  ]
+}

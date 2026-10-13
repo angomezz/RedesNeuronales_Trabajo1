@@ -1,0 +1,21 @@
+{
+  "place_id": 292212813,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 344401,
+  "lat": "42.8156860",
+  "lon": "-1.6522353",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6733529923620195,
+  "addresstype": "city",
+  "name": "Pamplona / Iruña",
+  "display_name": "Pamplona / Iruña, Iruñerria, Navarra, Navarra / Nafarroa, España",
+  "boundingbox": [
+    "42.7887572",
+    "42.8424401",
+    "-1.6953841",
+    "-1.6044942"
+  ]
+}

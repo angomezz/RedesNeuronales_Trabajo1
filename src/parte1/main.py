@@ -856,7 +856,7 @@ def schwefel_xy(x, y):
 
 
 def animar_gd(trayectoria, f_xy, dominio, minimo, nombre_gif,
-              titulo='GD', paso_frames=1, max_frames=150, log=True):
+                titulo='GD', paso_frames=1, max_frames=150, log=True):
     """Genera y guarda una animación GIF de la trayectoria de Descenso por Gradiente."""
     tray = np.asarray(trayectoria)
     xmin, xmax, ymin, ymax = dominio
@@ -919,7 +919,7 @@ Image(filename='gd_rosenbrock.gif')
 options1 = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
 bounds = (np.array([-2, -1]), np.array([2, 3]))
 optimizer1 = ps.single.GlobalBestPSO(n_particles=50, dimensions=2,
-                                     options=options1, bounds=bounds)   # <- faltaba esto
+                                        options=options1, bounds=bounds)   # <- faltaba esto
 cost1, pos1 = optimizer1.optimize(fx.rosenbrock, iters=100)
 
 limits = [(-2, 2), (-1, 3)]                       # [(xmin, xmax), (ymin, ymax)]
@@ -927,5 +927,5 @@ m1 = Mesher(func=fx.rosenbrock, limits=limits, levels=np.logspace(-1, 3.5, 25))
 d1 = Designer(limits=limits, label=['x', 'y'])    # <- esto controla los ejes
 
 animation1 = plot_contour(pos_history=optimizer1.pos_history,
-                          mesher=m1, designer=d1, mark=(1, 1))
+                            mesher=m1, designer=d1, mark=(1, 1))
 animation1.save('pso_rosenbrock.gif', writer='imagemagick', fps=10)

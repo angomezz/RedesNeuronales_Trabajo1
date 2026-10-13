@@ -1,0 +1,21 @@
+{
+  "place_id": 295431630,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 340746,
+  "lat": "36.7647913",
+  "lon": "-4.4422005",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6776065694245125,
+  "addresstype": "municipality",
+  "name": "Málaga",
+  "display_name": "Málaga, Málaga-Costa del Sol, Málaga, Andalucía, España",
+  "boundingbox": [
+    "36.6356619",
+    "36.8940412",
+    "-4.5878887",
+    "-4.2604897"
+  ]
+}

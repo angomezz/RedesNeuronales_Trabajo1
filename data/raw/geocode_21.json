@@ -1,0 +1,21 @@
+{
+  "place_id": 293157153,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 342800,
+  "lat": "40.6326979",
+  "lon": "-3.1646067",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.5970568201871614,
+  "addresstype": "city",
+  "name": "Guadalajara",
+  "display_name": "Guadalajara, Castilla-La Mancha, España",
+  "boundingbox": [
+    "40.4608341",
+    "40.7707222",
+    "-3.3141493",
+    "-2.9811900"
+  ]
+}

@@ -80,8 +80,8 @@ for c in ciudades:
 
 for i in range(len(ciudades)):
     for j in range(i + 1, len(ciudades)):
-        d = haversine_km(float(ciudades[i]["lat"]), float(ciudades[i]["lon"]),
-                         float(ciudades[j]["lat"]), float(ciudades[j]["lon"]))
+        d = haversine_km(   float(ciudades[i]["lat"]), float(ciudades[i]["lon"]),
+                            float(ciudades[j]["lat"]), float(ciudades[j]["lon"]))
         if d < CONFIG["dist_min_km"]:
             problemas.append(f"Muy cerca ({d:.1f} km): {ciudades[i]['ciudad']} y {ciudades[j]['ciudad']}")
 

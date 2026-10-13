@@ -1,0 +1,21 @@
+{
+  "place_id": 290838883,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 346465,
+  "lat": "43.3224219",
+  "lon": "-1.9838889",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6747161326907494,
+  "addresstype": "city",
+  "name": "Donostia / San Sebastián",
+  "display_name": "Donostia / San Sebastián, Gipuzkoa, Euskadi, España",
+  "boundingbox": [
+    "43.2178373",
+    "43.3381594",
+    "-2.0868082",
+    "-1.8878839"
+  ]
+}

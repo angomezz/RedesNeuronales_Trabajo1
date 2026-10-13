@@ -1,0 +1,21 @@
+{
+  "place_id": 287966744,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 341736,
+  "lat": "42.4280650",
+  "lon": "-8.6041447",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.5959105070625417,
+  "addresstype": "municipality",
+  "name": "Pontevedra",
+  "display_name": "Pontevedra, Galicia, España",
+  "boundingbox": [
+    "42.3432344",
+    "42.5130550",
+    "-8.6991584",
+    "-8.5551062"
+  ]
+}

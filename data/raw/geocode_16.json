@@ -1,0 +1,21 @@
+{
+  "place_id": 295407372,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 343207,
+  "lat": "37.8845813",
+  "lon": "-4.7760138",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6589732149753109,
+  "addresstype": "city",
+  "name": "Córdoba",
+  "display_name": "Córdoba, Andalucía, España",
+  "boundingbox": [
+    "37.6658228",
+    "38.0315171",
+    "-4.9985994",
+    "-4.3514283"
+  ]
+}

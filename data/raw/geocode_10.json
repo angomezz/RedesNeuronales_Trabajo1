@@ -1,0 +1,21 @@
+{
+  "place_id": 292898535,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 344165,
+  "lat": "42.3448498",
+  "lon": "-3.6812477",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6560855377953523,
+  "addresstype": "city",
+  "name": "Burgos",
+  "display_name": "Burgos, Castilla y León, España",
+  "boundingbox": [
+    "42.2852754",
+    "42.4042841",
+    "-3.7943724",
+    "-3.5853379"
+  ]
+}

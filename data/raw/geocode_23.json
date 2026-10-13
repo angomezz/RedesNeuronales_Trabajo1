@@ -1,0 +1,21 @@
+{
+  "place_id": 290689309,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 345769,
+  "lat": "42.1382539",
+  "lon": "-0.4080901",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6066841075990158,
+  "addresstype": "city",
+  "name": "Huesca/Uesca",
+  "display_name": "Huesca/Uesca, Hoya de Huesca / Plana de Uesca, Huesca, Aragón, España",
+  "boundingbox": [
+    "42.0280178",
+    "42.2450524",
+    "-0.5179073",
+    "-0.3367490"
+  ]
+}
