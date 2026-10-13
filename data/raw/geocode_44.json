@@ -1,0 +1,21 @@
+{
+  "place_id": 292775237,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 348849,
+  "lat": "41.6200024",
+  "lon": "-4.7259906",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6679664703202588,
+  "addresstype": "city",
+  "name": "Valladolid",
+  "display_name": "Valladolid, Castilla y León, España",
+  "boundingbox": [
+    "41.5231281",
+    "41.8155086",
+    "-4.9281803",
+    "-4.6308064"
+  ]
+}

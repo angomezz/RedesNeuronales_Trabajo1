@@ -1,0 +1,21 @@
+{
+  "place_id": 292929045,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 348905,
+  "lat": "40.6571950",
+  "lon": "-4.6626677",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6123944282940105,
+  "addresstype": "city",
+  "name": "Ávila",
+  "display_name": "Ávila, Castilla y León, España",
+  "boundingbox": [
+    "40.5607574",
+    "40.7536666",
+    "-4.8164528",
+    "-4.4536129"
+  ]
+}

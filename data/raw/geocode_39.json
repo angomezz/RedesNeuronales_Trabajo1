@@ -1,0 +1,21 @@
+{
+  "place_id": 294444392,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 340050,
+  "lat": "41.7633842",
+  "lon": "-2.4642041",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.5907659815967679,
+  "addresstype": "city",
+  "name": "Soria",
+  "display_name": "Soria, Castilla y León, España",
+  "boundingbox": [
+    "41.6763310",
+    "41.9328525",
+    "-3.0167705",
+    "-1.9133408"
+  ]
+}

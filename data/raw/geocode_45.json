@@ -1,0 +1,21 @@
+{
+  "place_id": 292334472,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 345042,
+  "lat": "41.5162772",
+  "lon": "-5.7736011",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.5941600329733231,
+  "addresstype": "city",
+  "name": "Zamora",
+  "display_name": "Zamora, Castilla y León, España",
+  "boundingbox": [
+    "41.4584955",
+    "41.5741598",
+    "-5.9775295",
+    "-5.6353421"
+  ]
+}

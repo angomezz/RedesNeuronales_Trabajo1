@@ -1,0 +1,21 @@
+{
+  "place_id": 294565184,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 342999,
+  "lat": "39.8558913",
+  "lon": "-4.0242650",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6642457688416626,
+  "addresstype": "city",
+  "name": "Toledo",
+  "display_name": "Toledo, Castilla-La Mancha, España",
+  "boundingbox": [
+    "39.8108202",
+    "39.9254339",
+    "-4.1800787",
+    "-3.8147929"
+  ]
+}

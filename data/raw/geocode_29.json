@@ -1,0 +1,21 @@
+{
+  "place_id": 292905100,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "node",
+  "osm_id": 167386167,
+  "lat": "40.4237276",
+  "lon": "-3.6899043",
+  "category": "amenity",
+  "type": "library",
+  "place_rank": 30,
+  "importance": 0.8632848200163606,
+  "addresstype": "amenity",
+  "name": "Biblioteca Nacional de España",
+  "display_name": "Biblioteca Nacional de España, 20-22, Paseo de Recoletos, Recoletos, Salamanca, Madrid, Comunidad de Madrid, 28071, España",
+  "boundingbox": [
+    "40.4236776",
+    "40.4237776",
+    "-3.6899543",
+    "-3.6898543"
+  ]
+}

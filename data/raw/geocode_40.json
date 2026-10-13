@@ -1,0 +1,21 @@
+{
+  "place_id": 83809148,
+  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+  "osm_type": "relation",
+  "osm_id": 339887,
+  "lat": "41.1172364",
+  "lon": "1.2546057",
+  "category": "boundary",
+  "type": "administrative",
+  "place_rank": 16,
+  "importance": 0.6459487453629906,
+  "addresstype": "city",
+  "name": "Tarragona",
+  "display_name": "Tarragona, Tarragonès, Tarragona, Catalunya, España",
+  "boundingbox": [
+    "41.0786393",
+    "41.1668803",
+    "1.1870606",
+    "1.3752004"
+  ]
+}
