@@ -23,6 +23,16 @@ Departamento de Ciencias de la Computación y de la Decisión · Semestre 2026-0
 | Juan José Baena Garcia | jubaenag@unal.edu.co |
 | Sebastian Ocampo Galvis | seocampog@unal.edu.co |
 
+## Videos de contribución individual
+
+En cumplimiento de las indicaciones del trabajo, cada integrante presenta un video de **2 a 3 minutos** en el que explica, en primera persona, sus aportes específicos al proyecto y muestra evidencia concreta de su trabajo, como fragmentos de código, commits, figuras o secciones del reporte.
+
+La presentación reúne los videos de todos los integrantes:
+
+**[Ver presentación con los videos de contribución individual](https://canva.link/m3tak8meiaeh9ky)**
+
+Los aportes expuestos podrán ser objeto de preguntas durante la sustentación del trabajo.
+
 ## Estructura del repositorio
 
 ## Instalación
@@ -169,6 +179,22 @@ python -m pytest test/ -q
 Cada dato del TSP está documentado en `data/SOURCES.md` con su fuente y su fecha de consulta.
 Los datos que usan los experimentos se guardan en `data/`, de modo que la ejecución no
 depende de internet ni de APIs externas.
+
+## Cacería de la alucinación
+
+En cumplimiento de las indicaciones del trabajo, se documentan los hallazgos en los que las herramientas de inteligencia artificial generaron información incorrecta, imprecisa, desactualizada o soluciones subóptimas durante el desarrollo del proyecto.
+
+Los hallazgos se encuentran documentados en archivos Markdown dentro del directorio `docs/`, organizados por integrante:
+
+- `docs/caceria_alucinacion_p1.md`: hallazgos del integrante 1.
+- `docs/caceria_alucinacion_p2.md`: hallazgos del integrante 2.
+- `docs/caceria_alucinacion_p3.md`: hallazgos del integrante 3.
+- `docs/caceria_alucinacion_p4.md`: hallazgos del integrante 4.
+- `docs/caceria_alucinacion_p5.md`: hallazgos del integrante 5.
+
+Cada archivo contiene los casos identificados por su respectivo integrante, incluyendo los prompts utilizados, las respuestas relevantes de la IA, la evidencia que demuestra los errores, las correcciones realizadas y las lecciones aprendidas.
+
+Esta documentación permite evidenciar el análisis crítico de las respuestas generadas por inteligencia artificial durante el desarrollo del proyecto, de acuerdo con las categorías de hallazgos establecidas en el enunciado.
 
 ## Estado del trabajo
 
