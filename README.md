@@ -6,7 +6,11 @@ Departamento de Ciencias de la Computación y de la Decisión · Semestre 2026-0
 
 ## Reporte técnico (entrada de blog)
 
-**[Leer el reporte completo](blog/README.md)**
+**[Leer la entrada de blog publicada en RPubs](https://rpubs.com/juan0911miranda/trabajo1-redes-neuronales)**
+
+- Fuente de la entrada (R Markdown): [`blog/blog_trabajo1.Rmd`](blog/blog_trabajo1.Rmd). Para regenerarla, abrir el archivo en RStudio y presionar *Knit*.
+- La misma entrada en Markdown, para leerla directamente en GitHub: [`blog/README.md`](blog/README.md).
+- Figuras usadas en la entrada: [`blog/figuras/`](blog/figuras/).
 
 ## Descripción
 

@@ -4,6 +4,7 @@
 
 **Equipo:** Tomás Gómez Cardona (P1), Sebastián Ocampo Galvis (P2), Juan Felipe Miranda Arciniegas (P3), Ana Sofía Gómez Zapata (P4), Juan José Baena García (P5).
 
+**Entrada publicada en RPubs:** https://rpubs.com/juan0911miranda/trabajo1-redes-neuronales
 **Repositorio:** https://github.com/angomezz/RedesNeuronales_Trabajo1
 **Videos de contribución individual:** https://canva.link/m3tak8meiaeh9ky
 
