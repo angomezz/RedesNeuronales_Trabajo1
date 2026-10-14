@@ -1,13 +1,13 @@
 """
 Construye las matrices de distancia, tiempo, peajes y costo total del TSP en España.
 Guarda los archivos en data/:
-  - data/dist_matrix.csv (km)
-  - data/time_matrix.csv (horas)
-  - data/toll_matrix.csv (euros)
-  - data/cost_matrix.csv (euros, con valor de la hora por defecto = 20.0 €/h)
+    - data/dist_matrix.csv (km)
+    - data/time_matrix.csv (horas)
+    - data/toll_matrix.csv (euros)
+    - data/cost_matrix.csv (euros, con valor de la hora por defecto = 20.0 €/h)
 
 Uso:
-  python scripts/build_cost_matrices.py [--hourly-value 20.0]
+    python scripts/build_cost_matrices.py [--hourly-value 20.0]
 """
 
 import argparse
