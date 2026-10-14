@@ -123,7 +123,7 @@ def correr(cfg):
             v = np.asarray(valores)
             filas_resumen.append({
                 "funcion": nombre, "dim": n, "corridas": len(v),
-                "media": v.mean(), "desv_est": v.std(ddof=1),
+                "media": v.mean(), "desv_est": v.std(),
                 "mejor": v.min(), "peor": v.max(), "mediana": float(np.median(v)),
                 "tasa_exito_%": 100.0 * np.mean(v <= cfg["umbral"]),
                 "dist_media_x_opt": float(np.mean(distancias)),
