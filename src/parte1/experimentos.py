@@ -140,11 +140,12 @@ def run_one_experiment(
     }
 
 
-def summarize_results(results, success_threshold):
+def summarize_results(results, success_threshold, global_optimum=0.0):
     values = np.asarray([result["f_opt"] for result in results])
     evals_f = np.asarray([result["evals_f"] for result in results])
     evals_grad = np.asarray([result["evals_grad"] for result in results])
-    successes = np.count_nonzero(values <= success_threshold)
+    errors = np.abs(values - global_optimum)
+    successes = np.count_nonzero(errors <= success_threshold)
 
     return {
         "algorithm": results[0]["algorithm"],
