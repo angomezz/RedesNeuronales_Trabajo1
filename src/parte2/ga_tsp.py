@@ -1,18 +1,18 @@
 """
-Algoritmo genético para el problema del viajero (Trabajo 1, Parte 2).
+Algoritmo genetico para el problema del viajero (Trabajo 1, Parte 2).
 
 Mismo esquema del notebook de colonias de hormigas visto en clase: ciudades
-sintéticas con seed(56), matriz de distancias con scipy y recorrido graficado.
+sinteticas con seed(56), matriz de distancias con scipy y recorrido graficado.
 
-Uso (un solo comando, parámetros por línea de comandos):
+Uso (un solo comando, parzmetros por linea de comandos):
     python scripts/ga_tsp.py --seed 56 --n_cities 40 --pop 200 --gens 500
     python scripts/ga_tsp.py --matrix data/cost_matrix.csv --pop 300 --gens 800 --no-show
 
-También se puede ejecutar celda por celda (VS Code / Jupyter): las celdas 1 a 4
+Tambien se puede ejecutar celda por celda (VS Code / Jupyter): las celdas 1 a 4
 definen todo y la celda 5 en adelante corre el experimento.
 """
 
-# %% [1] Imports y configuración
+# %% [1] Imports y configuracion
 import argparse
 import json
 import pathlib
@@ -23,15 +23,15 @@ import numpy as np
 from scipy.spatial import distance_matrix
 
 CONFIG = {
-    "seed": 56,          # semilla del GA (la de las ciudades sintéticas es la misma)
-    "n_cities": 40,      # solo se usa con ciudades sintéticas
-    "matrix": None,      # ruta a un CSV con la matriz de costos (n x n); None = sintético
-    "pop": 200,          # tamaño de la población
-    "gens": 500,         # número de generaciones
+    "seed": 56,          # semilla del GA (la de las ciudades sinteticas es la misma)
+    "n_cities": 40,      # solo se usa con ciudades sinteticas
+    "matrix": None,      # ruta a un CSV con la matriz de costos (n x n); None = sintetico
+    "pop": 200,          # tamaño de la poblacion
+    "gens": 500,         # numero de generaciones
     "k": 3,              # tamaño del torneo
     "pc": 0.9,           # probabilidad de cruce
-    "pm": 0.2,           # probabilidad de mutación (por individuo)
-    "elite": 2,          # individuos que pasan intactos a la siguiente generación
+    "pm": 0.2,           # probabilidad de mutacion (por individuo)
+    "elite": 2,          # individuos que pasan intactos a la siguiente generacion
     "patience": 0,       # generaciones sin mejora para parar (0 = no parar antes)
     "out": "results/ga_result.json",
     "show": True,
@@ -39,14 +39,14 @@ CONFIG = {
 
 
 def parse_config(argv=None):
-    """Lee la configuración por defecto y la sobrescribe con la línea de comandos."""
-    p = argparse.ArgumentParser(description="Algoritmo genético para el TSP")
+    """Lee la configuracion por defecto y la sobrescribe con la iínea de comandos."""
+    p = argparse.ArgumentParser(description="Algoritmo genetico para el TSP")
     for nombre, valor in CONFIG.items():
         if isinstance(valor, bool):
             continue
         tipo = type(valor) if valor is not None else str
         p.add_argument(f"--{nombre}", type=tipo, default=valor)
-    p.add_argument("--no-show", action="store_true", help="no abrir ventanas de gráficos")
+    p.add_argument("--no-show", action="store_true", help="no abrir ventanas de graficos")
     args, _ = p.parse_known_args(argv)  # parse_known_args: no falla dentro de un notebook
     cfg = vars(args)
     cfg["show"] = not cfg.pop("no_show")
@@ -66,14 +66,14 @@ def load_problem(cfg):
     return distance_matrix(coords, coords), coords
 
 
-# %% [3] Utilidades: costo de un recorrido y línea base
+# %% [3] Utilidades: costo de un recorrido y linea base
 def tour_cost(M, tour):
     """Costo del ciclo cerrado: suma de los arcos, incluido el regreso a la salida."""
     return float(M[tour, np.roll(tour, -1)].sum())
 
 
 def nearest_neighbor(M, start=0):
-    """Línea base: ir siempre a la ciudad más cercana no visitada."""
+    """Linea base: ir siempre a la ciudad mas cercana no visitada."""
     visited = [start]
     while len(visited) < len(M):
         d = M[visited[-1]].copy()
@@ -82,9 +82,9 @@ def nearest_neighbor(M, start=0):
     return np.array(visited)
 
 
-# %% [4] Operadores genéticos
+# %% [4] Operadores geneticos
 def tournament(rng, costs, k):
-    """Selección por torneo: de k individuos al azar gana el de menor costo."""
+    """Seleccion por torneo: de k individuos al azar gana el de menor costo."""
     candidatos = rng.choice(len(costs), size=k, replace=False)
     return candidatos[np.argmin(costs[candidatos])]
 
@@ -97,7 +97,7 @@ def order_crossover(rng, p1, p2):
     hijo = np.full(n, -1)
     hijo[a:b] = p1[a:b]
     en_segmento = set(p1[a:b].tolist())
-    orden_p2 = np.concatenate([p2[b:], p2[:b]])           # p2 leído desde el corte b
+    orden_p2 = np.concatenate([p2[b:], p2[:b]])           # p2 leido desde el corte b
     restantes = [g for g in orden_p2 if g not in en_segmento]
     posiciones = list(range(b, n)) + list(range(0, a))    # huecos, desde b en forma circular
     hijo[posiciones] = restantes
@@ -105,14 +105,14 @@ def order_crossover(rng, p1, p2):
 
 
 def inversion_mutation(rng, tour):
-    """Mutación por inversión: invierte un segmento al azar (equivale a un movimiento 2-opt)."""
+    """Mutacion por inversion: invierte un segmento al azar (equivale a un movimiento 2-opt)."""
     i, j = np.sort(rng.choice(len(tour), size=2, replace=False))
     nuevo = tour.copy()
     nuevo[i:j + 1] = nuevo[i:j + 1][::-1]
     return nuevo
 
 
-# %% [5] Algoritmo genético
+# %% [5] Algoritmo genetico
 def run_ga(M, cfg):
     """Corre el GA. Devuelve un diccionario con el mejor recorrido, su costo e historial."""
     rng = np.random.default_rng(cfg["seed"])
@@ -172,7 +172,7 @@ def run_ga(M, cfg):
     }
 
 
-# %% [6] Ejecución del experimento
+# %% [6] Ejecucion del experimento
 if __name__ == "__main__":
     cfg = parse_config()
     M, coords = load_problem(cfg)
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     nn_cost = tour_cost(M, nn)
     print(f"Ciudades: {len(M)} | semilla: {cfg['seed']}")
     print(f"Mejor costo GA:            {res['best_cost']:.4f}")
-    print(f"Costo vecino más cercano:  {nn_cost:.4f}")
+    print(f"Costo vecino mas cercano:  {nn_cost:.4f}")
     print(f"Evaluaciones de costo:     {res['evaluations']}")
     print(f"Generaciones / tiempo:     {res['generations_run']} / {res['seconds']} s")
 
@@ -194,7 +194,7 @@ if __name__ == "__main__":
     salida.write_text(json.dumps(guardar, indent=2), encoding="utf-8")
     print(f"Resultados guardados en {salida}")
 
-    # %% [7] Gráficos lado a lado: recorrido y convergencia
+    # %% [7] Graficos lado a lado: recorrido y convergencia
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
     if coords is not None:
         t = np.array(res["best_tour"] + [res["best_tour"][0]])
@@ -206,8 +206,8 @@ if __name__ == "__main__":
         ax1.text(0.5, 0.5, "Sin coordenadas\n(matriz de costos)", ha="center", va="center")
         ax1.set_axis_off()
     ax2.plot(res["history_best"], label="Mejor hasta ahora")
-    ax2.plot(res["history_mean"], label="Media de la población", alpha=0.6)
-    ax2.axhline(nn_cost, color="gray", linestyle="--", label="Vecino más cercano")
+    ax2.plot(res["history_mean"], label="Media de la poblacion", alpha=0.6)
+    ax2.axhline(nn_cost, color="gray", linestyle="--", label="Vecino mas cercano")
     ax2.set_xlabel("Generación")
     ax2.set_ylabel("Costo del recorrido")
     ax2.set_title("Convergencia")
@@ -222,7 +222,7 @@ if __name__ == "__main__":
 """
 Ciudades: 40 | semilla: 56
 Mejor costo GA:            5.3969
-Costo vecino más cercano:  6.7662
+Costo vecino mas cercano:  6.7662
 Evaluaciones de costo:     99200
 Generaciones / tiempo:     500 / 3.94 s
 Resultados guardados en results\ga_result.json
