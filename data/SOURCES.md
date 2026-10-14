@@ -1,83 +1,80 @@
-# Fuentes de datos del problema del vendedor viajero (TSP) en España
+# Fuentes y construcción de los datos del TSP
 
-Documentación de los datos utilizados en la Parte 2 del Trabajo 1: Optimización Combinatoria.
-Fecha de recopilación y verificación: **13 de octubre de 2026**.
+Responsable de los datos: Persona 4 (Ana Sofía Gómez Zapata).
+Revisión de esta documentación: 13 de octubre de 2026.
 
----
+Este archivo describe exactamente cómo se construyó cada dato que usan los algoritmos, de dónde salió y qué limitaciones tiene. Todos los archivos están guardados en `data/`, así que los experimentos no necesitan internet.
 
-## 1. Ciudades seleccionadas (47 capitales peninsulares)
+## 1. Ciudades
 
-- **Total de ciudades:** 47 capitales de provincia de la España peninsular.
-- **Criterio de exclusión reglamentario:**
-  - Se excluyen **Palma (Islas Baleares)**, **Las Palmas de Gran Canaria** y **Santa Cruz de Tenerife (Islas Canarias)** por tratarse de territorios insulares no accesibles por vía terrestre.
-  - Se excluyen **Ceuta** y **Melilla** por ser ciudades autónomas en el norte de África sin conexión directa por carretera desde la península ibérica.
-- **Fuente de las coordenadas geográficas:** Instituto Geográfico Nacional (IGN) de España y OpenStreetMap Nominatim Geocoding API (`https://nominatim.openstreetmap.org/`).
+- **Qué son:** las 47 capitales de provincia de la España peninsular (`data/cities.csv`).
+- **Excluidas, según el enunciado:** Palma, Las Palmas de Gran Canaria y Santa Cruz de Tenerife (islas), y Ceuta y Melilla (no son provincias ni tienen acceso por carretera desde la península).
+
+## 2. Coordenadas
+
+- **Fuente:** servicio de geocodificación Nominatim de OpenStreetMap (https://nominatim.openstreetmap.org), datos © colaboradores de OpenStreetMap, licencia ODbL.
+- **Cómo:** el script `scripts/01_build_cities.py` consulta cada ciudad y guarda la respuesta completa en `data/raw/geocode_XX.json`; el resultado queda en `data/coordinates.csv`.
+- **Fecha de consulta:** 13/10/2026 (fecha en que se agregaron al repositorio).
+- **Observación:** para 46 ciudades el punto devuelto es la ciudad como tal. Para Madrid, Nominatim devolvió la Biblioteca Nacional de España (Paseo de Recoletos), que está en el centro de la ciudad, así que no afecta las distancias de forma importante.
+
+## 3. Distancias
+
+- **Cómo se calcularon:** distancia en línea recta sobre la superficie de la Tierra (fórmula de Haversine, tomando la Tierra como una esfera de radio 6371 km), multiplicada por un factor de 1.28 para aproximar la distancia por carretera.
+- **Archivo:** `data/dist_matrix.csv` (km). Script: `src/parte2/build_cost_matrices.py`.
+- **Limitación importante:** no son distancias reales por carretera. El factor 1.28 es una suposición del equipo y no tiene fuente. Por ejemplo, Madrid–Barcelona sale en 645.6 km.
+
+## 4. Tiempos de viaje
+
+- **Cómo se calcularon:** distancia de la sección 3 dividida entre una velocidad promedio fija de 105 km/h, igual para todos los trayectos.
+- **Archivo:** `data/time_matrix.csv` (horas).
+- **Limitación importante:** como la velocidad es la misma en todos los trayectos, el tiempo es simplemente proporcional a la distancia. Esto tiene una consecuencia para el estudio del valor de la hora: el costo de cada trayecto queda como
+
+  $$C_{ij} = D_{ij}\left(\frac{V_h}{105} + \frac{5.6}{100}\,p\right) + P_{ij},$$
+
+  así que cambiar $V_h$ (o el precio $p$ del combustible) solo cambia cuánto pesa la distancia frente a los peajes. Con datos reales por carretera, donde unas vías son más rápidas que otras, el efecto del valor de la hora podría ser distinto.
+
+## 5. Peajes
+
+- **Archivo:** `data/toll_matrix.csv` (euros). Solo 8 pares de ciudades tienen peaje:
+
+| Trayecto | Peaje usado (€) | Autopista |
+|---|---|---|
+| Bilbao – Zaragoza | 33.75 | AP-68 |
+| Logroño – Zaragoza | 17.50 | AP-68 |
+| Bilbao – Logroño | 16.25 | AP-68 |
+| Oviedo – León | 14.30 | AP-66 |
+| Madrid – Ávila | 9.85 | AP-6 / AP-51 |
+| Madrid – Segovia | 7.30 | AP-6 / AP-61 |
+| León – Ourense | 5.60 | AP-71 |
+| Málaga – Granada | 5.40 | AP-46 |
+
+- **Pendiente de verificar:** estos valores no tienen enlace a la tarifa oficial de la que salieron. Hay que confirmarlos con las tarifas 2026 publicadas por cada concesionaria o por el Ministerio de Transportes.
+- **Autopistas que ya no cobran y por eso tienen peaje 0:** AP-1 Burgos–Armiñón (desde diciembre de 2018); AP-7 Tarragona–Alicante y AP-4 Sevilla–Cádiz (desde el 1 de enero de 2020, al terminar la concesión sin renovarla); AP-2 Zaragoza–El Vendrell y AP-7 Tarragona–La Jonquera (desde septiembre de 2021).
+- **Limitaciones:**
+  - El peaje solo se asigna al par de ciudades listado. Un trayecto entre otras dos ciudades que en la realidad pase por una de esas autopistas tiene peaje 0 en la matriz.
+  - Hay autopistas con peaje que no están en la tabla. Por ejemplo, la AP-7 entre Alicante y Cartagena sigue con concesión hasta 2048. También habría que revisar otras como la AP-6 hacia Valladolid, la AP-9 en Galicia, la AP-8 en el País Vasco y la AP-15 en Navarra.
+
+## 6. Vehículo
+
+- **Modelo:** SEAT León 1.5 TSI de 130 CV (96 kW), gasolina, cambio manual.
+- **Consumo usado:** 5.6 L/100 km (ciclo combinado WLTP).
+- **Fuentes:**
+  - Ficha técnica oficial de SEAT (dossier de prensa del SEAT León 2020): rango WLTP de 5.4 a 6.1 L/100 km para el 1.5 TSI de 130 CV, 5 puertas. https://mundoseat.seat.com/mediacenter_netstor/seat-media-center/global_site/img/PressKits/IPP-SEAT-Leon-2020/Especificaciones-tecnicas-5-puertas.pdf
+  - km77, ficha del SEAT León 1.5 TSI 130 CV Xcellence: 5.6 L/100 km combinado WLTP. https://www.km77.com/coches/seat/leon/2020/5-puertas/estandar/leon-15-tsi-96-kw-130-cv-startstop-xcellence/datos
 - **Fecha de consulta:** 13/10/2026.
-- **Archivo en el repositorio:** `data/cities.csv` y `data/coordinates.csv`.
 
----
+## 7. Combustible
 
-## 2. Vehículo elegido y consumo homologado
+- **Tipo:** gasolina 95 E5.
+- **Precio usado en las matrices:** 1.62 €/L.
+- **Limitación importante:** este precio está desactualizado. El 1 de octubre de 2026 el precio medio nacional de la gasolina 95 era de 1.857 €/L, según datos oficiales de las estaciones de servicio (Demócrata, 1 de octubre de 2026, https://www.democrata.es/economia/precio-gasolina-hoy-1-octubre-2026/). La fuente oficial para consultarlo es el Geoportal de Gasolineras del Ministerio para la Transición Ecológica (https://geoportalgasolineras.es).
+- **Cómo actualizarlo:** cambiar el parámetro `fuel_price` en `build_matrices()` de `src/parte2/build_cost_matrices.py` y volver a generar las matrices.
 
-- **Modelo:** SEAT León 1.5 TSI 130 CV (gasolina manual, 5 puertas).
-- **Consumo mixto homologado (ciclo WLTP):** **5.6 L / 100 km** (rango oficial 5.4 - 5.8 L/100 km).
-- **Justificación del vehículo:** Es uno de los modelos compactos de mayor ventas y representatividad en el parque automotor de flotas comerciales en España, con datos de homologación auditados bajo la normativa europea Euro 6d / WLTP.
-- **Fuente oficial:** Ficha técnica de homologación oficial de SEAT España e inventario de vehículos del Instituto para la Diversificación y Ahorro de la Energía (IDAE), Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO).
-- **Fecha de consulta:** 13/10/2026.
+## 8. Costo total
 
----
+El costo de ir de la ciudad $i$ a la $j$ es
 
-## 3. Precio del combustible
+$$C_{ij}(V_h) = V_h\,T_{ij} + P_{ij} + D_{ij}\,\frac{5.6}{100}\cdot 1.62$$
 
-- **Tipo de combustible:** Gasolina 95 E5.
-- **Precio promedio de referencia:** **1.62 € / litro**.
-- **Fuente oficial:** Geoportal Gasolineras del Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO), Gobierno de España (`https://geoportalgasolineras.es/`). Promedio ponderado peninsular para estaciones de servicio de la península.
-- **Fecha de consulta:** 13/10/2026.
-
----
-
-## 4. Distancias y tiempos por carretera
-
-- **Red vial:** Red de Carreteras del Estado (Autovías A-x y Autopistas AP-x).
-- **Metodología de cálculo:** Distancia geodésica de gran círculo (fórmula de Haversine sobre el elipsoide terrestre medio con radio $R = 6371.0\text{ km}$), corregida por un factor de sinuosidad vial interurbana de **1.28** representativo de la topografía de la península ibérica.
-- **Velocidad promedio estimada:** **105.0 km/h** para cálculo de tiempos interurbanos en vías de alta capacidad (límite genérico de 120 km/h en autovías con deducciones por enlaces urbanos, peajes y pasos montañosos).
-- **Archivos en el repositorio:** `data/dist_matrix.csv` (distancias en km) y `data/time_matrix.csv` (tiempos en horas).
-
----
-
-## 5. Red de peajes en España (Estado real y actualizado)
-
-### Contexto histórico y levantamiento de peajes (Riesgo de desactualización en IA)
-En los últimos años, el Gobierno de España culminó varios contratos concesionales revertiendo las autopistas a titularidad pública y liberando sus peajes:
-1. **AP-1 (Burgos - Armiñón):** Libre de peaje desde el 30 de noviembre de 2018.
-2. **AP-7 (Alicante - Tarragona / tramo Valencia):** Libre de peaje desde el 1 de enero de 2020.
-3. **AP-4 (Sevilla - Cádiz):** Libre de peaje desde el 1 de enero de 2020.
-4. **AP-2 (Zaragoza - El Vendrell) y AP-7 (Tarragona - La Jonquera):** Libres de peaje desde el 31 de agosto de 2021.
-
-### Autopistas con peaje activo consideradas en la matriz (Tarifas oficiales 2026):
-- **AP-68 (Bilbao - Logroño - Zaragoza):** Concesión activa por Avasa (Abertis).
-  - Bilbao - Zaragoza (completo): **33.75 €**.
-  - Bilbao - Logroño: **16.25 €**.
-  - Logroño - Zaragoza: **17.50 €**.
-- **AP-6 / AP-61 (Madrid - Segovia) vía Túneles de Guadarrama:** **7.30 €**.
-- **AP-6 / AP-51 (Madrid - Ávila) vía Villacastín:** **9.85 €**.
-- **AP-66 (Campomanes - León / Autopista del Huerna):** **14.30 €**.
-- **AP-71 (León - Astorga hacia Ourense):** **5.60 €**.
-- **AP-46 (Alto de las Pedrizas - Málaga):** **5.40 €**.
-- **Fuente oficial:** Ministerio de Transportes y Movilidad Sostenible (MITMA) y Asociación de Empresas Constructoras y Concesionarias de Infraestructuras (SEOPAN) - Tarifas oficiales de peajes en la Red de Carreteras del Estado.
-- **Fecha de consulta:** 13/10/2026.
-- **Archivo en el repositorio:** `data/toll_matrix.csv`.
-
----
-
-## 6. Función de costo total formulada
-
-El costo de viajar entre la capital $i$ y la capital $j$ con un valor de hora del vendedor $V_h$ (€/h) se calcula como:
-
-$$\text{Costo}_{ij}(V_h) = (V_h \times T_{ij}) + P_{ij} + \left( D_{ij} \times \frac{5.6}{100} \times 1.62 \right)$$
-
-Donde:
-- $T_{ij}$: Tiempo de viaje en horas (`data/time_matrix.csv`).
-- $P_{ij}$: Peajes en euros (`data/toll_matrix.csv`).
-- $D_{ij}$: Distancia por carretera en km (`data/dist_matrix.csv`).
-- Archivo pregenerado con $V_h = 20.0\text{ \euro{}/h}$: `data/cost_matrix.csv`.
+- **Archivo:** `data/cost_matrix.csv`, generado con $V_h = 20$ €/h.
+- Las cuatro matrices son simétricas ($C_{ij} = C_{ji}$) y tienen ceros en la diagonal.
