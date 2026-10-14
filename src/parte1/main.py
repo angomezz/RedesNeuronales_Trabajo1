@@ -1,176 +1,285 @@
 """
-===============================================================================
-MÓDULO DE OPTIMIZACIÓN Y COMPARACIÓN DE ALGORITMOS
-===============================================================================
-Este archivo contiene la implementación de varios algoritmos de optimización
-(Descenso por Gradiente, PSO, Algoritmo Evolutivo y Evolución Diferencial)
-junto con la evaluación de su desempeño sobre las funciones de prueba
-Rosenbrock y Schwefel.
-===============================================================================
+MÓDULO PRINCIPAL Y CLI - TRABAJO 1 (PARTE 1)
+
+Permite ejecutar corridas individuales, el arnés de 30 corridas completas
+o generar las animaciones GIF mediante argumentos ingresados por terminal.
 """
 
-# =============================================================================
-# 1. IMPORTACIÓN DE LIBRERÍAS
-# =============================================================================
-import numpy as np
-import matplotlib.pyplot as plt
-import pyswarms as ps
-from . import funciones
+import argparse
+
 from .funciones import grad_rosenbrock, grad_schwefel, pyswarm_wrapper, rosenbrock, schwefel
-from .gradiente import grad_desc
-from .experimentos import run_repeated_experiment
-from .visualizacion import animar_gd, crear_animacion_pso_rosenbrock, rosen_xy, schwefel_xy
+from .experimentos import run_one_experiment, run_repeated_experiment
+from .visualizacion import animar_gd, crear_animacion_pso_rosenbrock, rosen_xy
 
 BASE_SEED = 56
 
 
-# =============================================================================
-# PRUEBAS INICIALES
-# =============================================================================
-
-x0 = np.array([-1.2, 1.0, 0.5])
-trayectoria = grad_desc(x0, grad_fun=grad_rosenbrock, max_iter=20000, learning_rate=0.001)
-
-print(f"Total de evaluaciones de f: {funciones.contador_f}")
-print(f"Total de evaluaciones de gradiente (grad_f): {funciones.contador_grad}")
-
-trayectoria = np.array(trayectoria)
-dim = trayectoria.shape[1]
-etiquetas = [f'$x_{{{i+1}}}$' for i in range(dim)]
-
-t = np.arange(len(trayectoria))
-plt.plot(t, trayectoria, label=etiquetas)
-plt.xlabel('Iteraciones')
-plt.ylabel('Valores de los parámetros')
-plt.title('Comportamiento de la optimización')
-plt.legend()
-plt.grid()
-plt.show()
-
-f_obj = [rosenbrock(punto) for punto in trayectoria]
-
-plt.plot(t, f_obj, label='Función objetivo')
-plt.xlabel('Iteraciones')
-plt.ylabel('Valor de la función objetivo')
-plt.title('Comportamiento de la optimización')
-plt.legend()
-plt.grid()
-plt.show()
-
-# Test inicial PSO Rosenbrock
-funciones.contador_rosenbrock = 0
-np.random.seed(BASE_SEED)
-xmin, xmax, ymin, ymax = -2, 2, -1, 3
-options1 = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
-bounds = (np.array([xmin, ymin]), np.array([xmax, ymax]))
-optimizer1 = ps.single.GlobalBestPSO(n_particles=50, dimensions=2, options=options1, bounds=bounds)
-cost1, pos1 = optimizer1.optimize(lambda X: pyswarm_wrapper(X, rosenbrock), iters=100, verbose=False)
-print(f"Evaluaciones de Rosenbrock: {funciones.contador_rosenbrock}")
-
-# Test inicial PSO Schwefel
-funciones.contador_schwefel = 0
-np.random.seed(BASE_SEED)
-xmin, xmax, ymin, ymax = -500, 500, -500, 500
-options1 = {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
-bounds = (np.array([xmin, ymin]), np.array([xmax, ymax]))
-optimizer1 = ps.single.GlobalBestPSO(n_particles=50, dimensions=2, options=options1, bounds=bounds)
-cost1, pos1 = optimizer1.optimize(lambda X: pyswarm_wrapper(X, schwefel), iters=100, verbose=False)
-print(f"Evaluaciones de Schwefel: {funciones.contador_schwefel}")
-
-
-# =============================================================================
-# 6. EVALUACIONES EXPERIMENTALES (30 CORRIDAS POR ALGORITMO)
-# =============================================================================
-
-COMMON_PSO = {
-    "n_particles": 50,
-    "iterations": 100,
-    "options": {"c1": 0.5, "c2": 0.3, "w": 0.9},
-}
-COMMON_EA = {"generations": 100}
-COMMON_DE = {"maxiter": 200, "popsize": 15, "tolerance": 1e-6}
-
-
-def imprimir_resumen(summary):
-    print(
-        f"{summary['algorithm'].upper()} {summary['dimension']}D | "
-        f"media={summary['mean']:.6f} ± {summary['std']:.6f} | "
-        f"mejor={summary['best']:.6f} | peor={summary['worst']:.6f} | "
-        f"éxito={summary['success_rate']:.1f}% | "
-        f"evals f={summary['mean_evals_f']:.2f} | "
-        f"evals grad={summary['mean_evals_grad']:.2f}"
+def construir_parser():
+    parser = argparse.ArgumentParser(
+        description=(
+            "CLI para Optimización Numérica y Metaheurística - "
+            "Trabajo 1 (Parte 1)"
+        )
     )
 
+    parser.add_argument(
+        "--modo",
+        type=str,
+        default="demo",
+        choices=["demo", "arnes", "gif"],
+        help=(
+            "Modo de ejecución: 'demo' (corrida única rápida), "
+            "'arnes' (30 corridas) o 'gif' (generar animaciones)."
+        ),
+    )
+    parser.add_argument(
+        "--funcion",
+        type=str,
+        default="rosenbrock",
+        choices=["rosenbrock", "schwefel"],
+        help="Función objetivo a optimizar.",
+    )
+    parser.add_argument(
+        "--dim",
+        type=int,
+        default=2,
+        choices=[2, 3],
+        help="Dimensión del espacio de búsqueda.",
+    )
+    parser.add_argument(
+        "--algoritmo",
+        type=str,
+        default="de",
+        choices=["gd", "pso", "ea", "de"],
+        help=(
+            "Algoritmo: 'gd' (gradiente), 'pso' (enjambre), "
+            "'ea' (evolutivo) o 'de' (evolución diferencial)."
+        ),
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=BASE_SEED,
+        help="Semilla aleatoria.",
+    )
+    parser.add_argument(
+        "--max_iter",
+        type=int,
+        default=2000,
+        help="Iteraciones máximas para GD.",
+    )
+    parser.add_argument(
+        "--learning_rate",
+        type=float,
+        default=0.00001,
+        help="Tasa de aprendizaje para GD.",
+    )
+    parser.add_argument(
+        "--popsize",
+        type=int,
+        default=50,
+        help="Tamaño de población para PSO/EA/DE.",
+    )
+    return parser
 
-EXPERIMENTS = [
-    {
-        "name": "Rosenbrock",
-        "objective": rosenbrock,
-        "gradient": grad_rosenbrock,
-        "domain": (-2.0, 2.0),
-    },
-    {
-        "name": "Schwefel",
-        "objective": schwefel,
-        "gradient": grad_schwefel,
-        "domain": (-500.0, 500.0),
-    },
-]
 
-ALGORITHMS = {
-    "gd": {
-        "parameters": {
-            "max_iter": 2000,
-            "learning_rate": 0.00001,
-            "tolerance": 0.00001,
+def obtener_configuracion_problema(nombre_func):
+    if nombre_func.lower() == "rosenbrock":
+        return {
+            "objective": rosenbrock,
+            "gradient": grad_rosenbrock,
+            "domain": (-2.0, 2.0),
+            "xy_func": rosen_xy,
+            "minimo": (1, 1),
         }
-    },
-    "pso": {"parameters": COMMON_PSO},
-    "ea": {"parameters": COMMON_EA},
-    "de": {"parameters": COMMON_DE},
-}
-
-for experiment in EXPERIMENTS:
-    print(f"--- {experiment['name']} ---")
-    for dimension in (2, 3):
-        for algorithm, configuration in ALGORITHMS.items():
-            parameters = dict(configuration["parameters"])
-            if algorithm == "gd" and experiment["name"] == "Schwefel":
-                parameters["learning_rate"] = 0.1
-
-            _, summary = run_repeated_experiment(
-                algorithm=algorithm,
-                objective=experiment["objective"],
-                gradient=experiment["gradient"],
-                dimension=dimension,
-                domain=experiment["domain"],
-                runs=30,
-                base_seed=BASE_SEED,
-                parameters=parameters,
-                success_threshold=1e-2,
-            )
-            imprimir_resumen(summary)
+    if nombre_func.lower() == "schwefel":
+        return {
+            "objective": schwefel,
+            "gradient": grad_schwefel,
+            "domain": (-500.0, 500.0),
+            "xy_func": None,
+            "minimo": (420.9687, 420.9687),
+        }
+    raise ValueError(f"Función desconocida: {nombre_func}")
 
 
-# =============================================================================
-# 7. ANIMACIONES Y VISUALIZACIONES
-# =============================================================================
-rng = np.random.default_rng(BASE_SEED)
-x0 = rng.uniform(-2, 2, 2)
+def ejecutar_demo(args):
+    config = obtener_configuracion_problema(args.funcion)
 
-trayectoria = grad_desc(x0, grad_fun=grad_rosenbrock, max_iter=20000, learning_rate=0.001)
+    if args.algoritmo == "gd":
+        params = {
+            "max_iter": args.max_iter,
+            "learning_rate": (
+                args.learning_rate
+                if args.funcion == "rosenbrock"
+                else 0.1
+            ),
+            "tolerance": 1e-5,
+        }
+    elif args.algoritmo == "pso":
+        params = {
+            "n_particles": args.popsize,
+            "iterations": 100,
+            "options": {"c1": 0.5, "c2": 0.3, "w": 0.9},
+        }
+    elif args.algoritmo == "ea":
+        params = {"generations": 100}
+    else:
+        params = {
+            "maxiter": 200,
+            "popsize": max(1, args.popsize // 3),
+            "tolerance": 1e-6,
+        }
 
-animar_gd(
-    trayectoria,
-    rosen_xy,
-    dominio=(-2, 2, -1, 3),
-    minimo=(1, 1),
-    nombre_gif='gd_rosenbrock.gif',
-    titulo='Rosenbrock – GD'
-)
+    print("\n=======================================================")
+    print(" EJECUTANDO DEMO EN VIVO")
+    print(
+        f" Algoritmo: {args.algoritmo.upper()} | "
+        f"Función: {args.funcion.capitalize()} | Dim: {args.dim}D"
+    )
+    print(
+        f" Semilla: {args.seed} | "
+        f"Población/Iteraciones: {args.popsize}/{args.max_iter}"
+    )
+    print("=======================================================\n")
 
-crear_animacion_pso_rosenbrock(
-    objective=rosenbrock,
-    objective_wrapper=pyswarm_wrapper,
-    seed=BASE_SEED,
-)
+    resultado = run_one_experiment(
+        algorithm=args.algoritmo,
+        objective=config["objective"],
+        gradient=config["gradient"],
+        dimension=args.dim,
+        domain=config["domain"],
+        seed=args.seed,
+        parameters=params,
+    )
+
+    print("--- RESULTADOS OBTENIDOS ---")
+    print(f"Coordenadas del Óptimo x*: {resultado['x_opt']}")
+    print(f"Valor Óptimo Hallado f(x*): {resultado['f_opt']:.8f}")
+    print(f"Evaluaciones de f(x): {resultado['evals_f']}")
+    print(f"Evaluaciones de Gradiente ∇f(x): {resultado['evals_grad']}")
+    print("=======================================================\n")
+
+
+def ejecutar_arnes_completo(base_seed):
+    print("\n=== EJECUTANDO ARNÉS COMPLETO (30 CORRIDAS) ===\n")
+
+    experiments = [
+        {
+            "name": "Rosenbrock",
+            "objective": rosenbrock,
+            "gradient": grad_rosenbrock,
+            "domain": (-2.0, 2.0),
+        },
+        {
+            "name": "Schwefel",
+            "objective": schwefel,
+            "gradient": grad_schwefel,
+            "domain": (-500.0, 500.0),
+        },
+    ]
+    algorithms = {
+        "gd": {
+            "parameters": {
+                "max_iter": 2000,
+                "learning_rate": 0.00001,
+                "tolerance": 1e-5,
+            }
+        },
+        "pso": {
+            "parameters": {
+                "n_particles": 50,
+                "iterations": 100,
+                "options": {"c1": 0.5, "c2": 0.3, "w": 0.9},
+            }
+        },
+        "ea": {"parameters": {"generations": 100}},
+        "de": {
+            "parameters": {
+                "maxiter": 200,
+                "popsize": 15,
+                "tolerance": 1e-6,
+            }
+        },
+    }
+
+    for experiment in experiments:
+        print(f"\n************ {experiment['name'].upper()} ************")
+        for dimension in (2, 3):
+            for algorithm, configuration in algorithms.items():
+                parameters = dict(configuration["parameters"])
+                if algorithm == "gd" and experiment["name"] == "Schwefel":
+                    parameters["learning_rate"] = 0.1
+
+                _, summary = run_repeated_experiment(
+                    algorithm=algorithm,
+                    objective=experiment["objective"],
+                    gradient=experiment["gradient"],
+                    dimension=dimension,
+                    domain=experiment["domain"],
+                    runs=30,
+                    base_seed=base_seed,
+                    parameters=parameters,
+                    success_threshold=1e-2,
+                )
+                print(
+                    f"{summary['algorithm'].upper():<4} "
+                    f"{summary['dimension']}D | "
+                    f"media={summary['mean']:.6f} ± "
+                    f"{summary['std']:.6f} | "
+                    f"mejor={summary['best']:.6f} | "
+                    f"peor={summary['worst']:.6f} | "
+                    f"éxito={summary['success_rate']:.1f}% | "
+                    f"evals f={summary['mean_evals_f']:.2f} | "
+                    f"evals grad={summary['mean_evals_grad']:.2f}"
+                )
+
+
+def generar_gifs_demo(seed):
+    print("\n=== GENERANDO ANIMACIONES GIF ===")
+
+    import numpy as np
+
+    rng = np.random.default_rng(seed)
+    x0 = rng.uniform(-2, 2, 2)
+    from .gradiente import grad_desc
+
+    trayectoria = grad_desc(
+        x0,
+        grad_fun=grad_rosenbrock,
+        max_iter=20000,
+        learning_rate=0.001,
+    )
+    animar_gd(
+        trayectoria,
+        rosen_xy,
+        dominio=(-2, 2, -1, 3),
+        minimo=(1, 1),
+        nombre_gif="gd_rosenbrock.gif",
+        titulo="Rosenbrock - GD",
+    )
+    print("GIF 'gd_rosenbrock.gif' generado con éxito.")
+
+    crear_animacion_pso_rosenbrock(
+        objective=rosenbrock,
+        objective_wrapper=pyswarm_wrapper,
+        nombre_gif="pso_rosenbrock.gif",
+        seed=seed,
+    )
+    print("GIF 'pso_rosenbrock.gif' generado con éxito.\n")
+
+
+def main():
+    parser = construir_parser()
+    args = parser.parse_args()
+
+    if args.modo == "demo":
+        ejecutar_demo(args)
+    elif args.modo == "arnes":
+        ejecutar_arnes_completo(args.seed)
+    else:
+        generar_gifs_demo(args.seed)
+
+
+if __name__ == "__main__":
+    main()
