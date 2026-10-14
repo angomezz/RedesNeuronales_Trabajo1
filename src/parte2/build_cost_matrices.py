@@ -16,6 +16,9 @@ import math
 import pathlib
 import numpy as np
 
+# Raíz del proyecto (2 niveles arriba de 'src/parte2/build_cost_matrices.py')
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent.parent
+
 def haversine_km(lat1, lon1, lat2, lon2):
     """Distancia en gran círculo en km sobre la esfera terrestre (R = 6371.0 km)."""
     R = 6371.0
@@ -26,9 +29,12 @@ def haversine_km(lat1, lon1, lat2, lon2):
     return 2.0 * R * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
 
 def build_matrices(hourly_value=20.0, consumption=5.6, fuel_price=1.62):
-    coords_path = pathlib.Path("data/coordinates.csv")
+    # Definir carpeta data respecto a la raíz del proyecto
+    data_dir = BASE_DIR / "data"
+    coords_path = data_dir / "coordinates.csv"
+    
     if not coords_path.exists():
-        raise FileNotFoundError("No se encuentra data/coordinates.csv")
+        raise FileNotFoundError("No se encuentra {coords_path}")
 
     with open(coords_path, mode="r", encoding="utf-8") as f:
         reader = list(csv.DictReader(f))
@@ -78,11 +84,14 @@ def build_matrices(hourly_value=20.0, consumption=5.6, fuel_price=1.62):
     # Costo total: (ValorHora * Tiempo) + Peajes + Combustible
     cost_matrix = (time_matrix * hourly_value) + toll_matrix + fuel_cost_matrix
 
+    # Asegurar que la carpeta 'data' existe antes de guardar
+    data_dir.mkdir(parents=True, exist_ok=True)
+
     # Guardar matrices
-    np.savetxt("data/dist_matrix.csv", dist_matrix, delimiter=",", fmt="%.2f")
-    np.savetxt("data/time_matrix.csv", time_matrix, delimiter=",", fmt="%.3f")
-    np.savetxt("data/toll_matrix.csv", toll_matrix, delimiter=",", fmt="%.2f")
-    np.savetxt("data/cost_matrix.csv", cost_matrix, delimiter=",", fmt="%.2f")
+    np.savetxt(data_dir / "dist_matrix.csv", dist_matrix, delimiter=",", fmt="%.2f")
+    np.savetxt(data_dir / "time_matrix.csv", time_matrix, delimiter=",", fmt="%.3f")
+    np.savetxt(data_dir / "toll_matrix.csv", toll_matrix, delimiter=",", fmt="%.2f")
+    np.savetxt(data_dir / "cost_matrix.csv", cost_matrix, delimiter=",", fmt="%.2f")
 
     print(f"Matrices generadas para {n} capitales:")
     print(f"  - data/dist_matrix.csv (km)")
@@ -97,3 +106,11 @@ if __name__ == "__main__":
     parser.add_argument("--hourly-value", type=float, default=20.0, help="Valor de la hora del vendedor en €/h")
     args = parser.parse_args()
     build_matrices(hourly_value=args.hourly_value)
+
+"""
+Matrices generadas para 47 capitales:
+  - data/dist_matrix.csv (km)
+  - data/time_matrix.csv (horas)
+  - data/toll_matrix.csv (euros)
+  - data/cost_matrix.csv (euros, con V_hora = €20.00/h)
+"""

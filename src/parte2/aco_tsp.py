@@ -318,3 +318,18 @@ if __name__ == "__main__":
 
     if cfg["show"]:
         plt.show()
+
+
+"""
+============================================================
+   COLONIAS DE HORMIGAS (ACO) - TSP
+============================================================
+Ciudades: 40 | Semilla: 56
+Hormigas: 47 | Iteraciones: 100
+Mejor costo ACO:           5.33
+Costo vecino más cercano:  6.77
+Evaluaciones de f(x):      4,700
+Tiempo de ejecución:       2.67 s
+------------------------------------------------------------
+Resultados guardados en results\aco_result.json
+"""

@@ -217,3 +217,13 @@ if __name__ == "__main__":
     fig.savefig(salida.with_suffix(".png"), dpi=120)
     if cfg["show"]:
         plt.show()
+
+
+"""
+Ciudades: 40 | semilla: 56
+Mejor costo GA:            5.3969
+Costo vecino más cercano:  6.7662
+Evaluaciones de costo:     99200
+Generaciones / tiempo:     500 / 3.94 s
+Resultados guardados en results\ga_result.json
+"""

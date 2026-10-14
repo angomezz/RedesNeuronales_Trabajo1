@@ -3,12 +3,12 @@ Estudio del impacto del valor de la hora del vendedor sobre la ruta óptima del 
 Módulo de análisis de sensibilidad para Persona 5 (P5).
 
 Responde a las preguntas de la rúbrica:
-  - ¿Cambia la ruta óptima al variar el valor de la hora?
-  - ¿A partir de qué valor cambia? (Punto crítico V_hora*)
-  - ¿Qué arcos y decisiones de transporte cambian (tiempo vs peaje vs distancia)?
+    - ¿Cambia la ruta óptima al variar el valor de la hora?
+    - ¿A partir de qué valor cambia? (Punto crítico V_hora*)
+    - ¿Qué arcos y decisiones de transporte cambian (tiempo vs peaje vs distancia)?
 
 Uso:
-  python scripts/study_hourly_value.py [--no-show]
+    python scripts/study_hourly_value.py [--no-show]
 """
 
 import argparse
@@ -20,16 +20,19 @@ import numpy as np
 
 from aco_tsp import CONFIG, run_aco, tour_cost
 
+# Raíz del proyecto (2 niveles arriba de 'src/parte2/study_hourly_value.py')
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent.parent
+
 def run_hourly_study(hourly_values=None, seeds=(42, 56, 101), no_show=False):
     if hourly_values is None:
         hourly_values = [0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 75.0, 100.0]
 
     # Cargar matrices base locales
-    dist_matrix = np.loadtxt("data/dist_matrix.csv", delimiter=",")
-    time_matrix = np.loadtxt("data/time_matrix.csv", delimiter=",")
-    toll_matrix = np.loadtxt("data/toll_matrix.csv", delimiter=",")
+    dist_matrix = np.loadtxt(BASE_DIR / "data" / "dist_matrix.csv", delimiter=",")
+    time_matrix = np.loadtxt(BASE_DIR / "data" / "time_matrix.csv", delimiter=",")
+    toll_matrix = np.loadtxt(BASE_DIR / "data" / "toll_matrix.csv", delimiter=",")
 
-    with open("data/coordinates.csv", mode="r", encoding="utf-8") as f:
+    with open(BASE_DIR / "data" / "coordinates.csv", mode="r", encoding="utf-8") as f:
         reader = list(csv.DictReader(f))
     names = [r["ciudad"] for r in reader]
     n = len(dist_matrix)
@@ -118,7 +121,7 @@ def run_hourly_study(hourly_values=None, seeds=(42, 56, 101), no_show=False):
     print("=" * 80)
 
     # Guardar resultados en results/
-    out_dir = pathlib.Path("results")
+    out_dir = BASE_DIR / "results"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     json_path = out_dir / "hourly_value_study.json"
@@ -195,3 +198,27 @@ if __name__ == "__main__":
     parser.add_argument("--no-show", action="store_true", help="no abrir ventanas de gráficos")
     args = parser.parse_args()
     run_hourly_study(no_show=args.no_show)
+
+"""
+================================================================================
+   ESTUDIO DEL VALOR DE LA HORA DEL VENDEDOR EN ESPAÑA (P5)
+================================================================================
+V_hora (€/h)  Costo (€)     Distancia (km)  Tiempo (h)    Peajes (€)  ¿Cambió?  
+--------------------------------------------------------------------------------
+0.0           593.92        6546.7          62.35         0.00        Base      
+5.0           901.58        6413.8          61.08         14.30       SÍ        
+10.0          1206.24       6409.6          61.05         14.30       SÍ        
+15.0          1481.51       6281.4          59.82         14.30       SÍ        
+20.0          1780.63       6281.4          59.82         14.30       SÍ        
+25.0          2142.90       6456.9          61.50         19.70       SÍ        
+30.0          2427.16       6409.6          61.05         14.30       SÍ        
+40.0          3065.35       6456.9          61.50         19.70       SÍ        
+50.0          3676.29       6459.4          61.52         14.30       SÍ        
+75.0          5181.16       6418.2          61.13         14.30       SÍ        
+100.0         6761.27       6468.0          61.60         14.30       SÍ        
+--------------------------------------------------------------------------------
+[+] CONCLUSIÓN:
+    ¿Cambia la ruta óptima? SÍ.
+    Punto crítico identificado: a partir de V_hora = €5.0/h la ruta óptima muta.
+================================================================================
+"""
