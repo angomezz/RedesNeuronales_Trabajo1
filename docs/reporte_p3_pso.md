@@ -1,6 +1,6 @@
 # Optimización por enjambre de partículas (PSO)
 
-**Autor:** Juan Felipe Miranda Arciniegas (Persona 3)
+**Autor de la sección:** Juan Felipe Miranda Arciniegas (Persona 3)
 
 <!-- Numeración de figuras y tablas provisional: se ajusta al armar el blog. -->
 
@@ -18,7 +18,7 @@ En cada paso, la partícula se mueve combinando tres cosas: seguir en la direcci
 
 ## 2. Ecuaciones
 
-Implementamos PSO desde cero (archivo `src/parte1/pso.py`), en la versión con peso de inercia de Shi y Eberhart (1998). En cada iteración $t$, para cada partícula $i$:
+Usamos la clase `GlobalBestPSO` de la librería PySwarms (Miranda, 2018), versión 1.3.0, llamada desde `src/parte1/experimentos.py`. Esta clase implementa la versión de PSO con peso de inercia de Shi y Eberhart (1998), en la que todas las partículas siguen al mismo mejor global $\mathbf{g}$. En cada iteración $t$, para cada partícula $i$:
 
 $$
 \mathbf{v}_i(t+1) = w\,\mathbf{v}_i(t) + c_1\,\mathbf{r}_1 \odot \big(\mathbf{p}_i - \mathbf{x}_i(t)\big) + c_2\,\mathbf{r}_2 \odot \big(\mathbf{g} - \mathbf{x}_i(t)\big)
@@ -36,56 +36,56 @@ donde:
 - $\mathbf{r}_1$ y $\mathbf{r}_2$ son números aleatorios entre 0 y 1, uno por cada componente,
 - $\odot$ significa multiplicar componente por componente.
 
-Después de moverse, si una partícula encontró un punto mejor que su $\mathbf{p}_i$, lo guarda, y $\mathbf{g}$ se actualiza con el mejor de todos.
+Después de evaluar las nuevas posiciones, si una partícula encontró un punto mejor que su $\mathbf{p}_i$, lo guarda, y $\mathbf{g}$ se actualiza con el mejor de todos.
 
-Agregamos dos detalles:
+Revisamos el código de la librería para saber qué hace en los detalles que las ecuaciones no dicen:
 
-- **Velocidad máxima.** La velocidad no puede pasar del 20 % del ancho del dominio. Si no, al principio las partículas pueden salir disparadas.
-- **Bordes del dominio.** Si una partícula se sale del dominio, la devolvemos al borde y le ponemos velocidad cero en esa dirección. Así nunca evaluamos $f$ por fuera. Esto importa en Schwefel, porque fuera de $[-500, 500]$ la función da valores más bajos que su mínimo global, y un método que se salga puede reportar un resultado "mejor" que el óptimo sin haberlo encontrado.
+- **Posiciones iniciales:** aleatorias y uniformes dentro del dominio.
+- **Velocidades iniciales:** aleatorias entre 0 y 1 en cada componente.
+- **Velocidad máxima:** no tiene; la velocidad no se limita.
+- **Bordes del dominio:** usa la estrategia "periódica". Si una partícula se sale por un lado del dominio, vuelve a entrar por el lado contrario, como si los bordes estuvieran conectados. Así, todas las evaluaciones de $f$ ocurren dentro del dominio.
+- **Números aleatorios:** usa el generador global de NumPy, que fijamos con `np.random.seed(semilla)` antes de cada corrida.
 
 ## 3. Parámetros
 
-Usamos $w = 0.7298$ y $c_1 = c_2 = 1.49618$ (Tabla 1). No los escogimos a mano: son los valores que proponen Clerc y Kennedy (2002), que analizaron con qué valores el enjambre converge sin quedarse oscilando. Ellos usan un "factor de constricción"
-
-$$
-\chi = \frac{2}{\left|2 - \varphi - \sqrt{\varphi^2 - 4\varphi}\right|}, \qquad \varphi = 4.1,
-$$
-
-que da $\chi \approx 0.7298$. Su versión es equivalente a la nuestra si se toma $w = \chi$ y $c_1 = c_2 = 2.05\,\chi \approx 1.49618$. Preferimos estos valores estándar para no ajustar el PSO a cada función y que la comparación con los otros métodos sea justa.
+La Tabla 1 muestra los parámetros que usamos.
 
 **Tabla 1.** *Parámetros del PSO usados en los experimentos.*
 
-| Parámetro | Símbolo | Valor | Opción en la línea de comandos |
-|---|---|---|---|
-| Número de partículas | $N$ | 50 | `--particulas` |
-| Iteraciones | $T$ | 100 | `--iteraciones` |
-| Peso de inercia | $w$ | 0.7298 (constante) | `--w-inicial`, `--w-final` |
-| Peso hacia su mejor punto | $c_1$ | 1.49618 | `--c1` |
-| Peso hacia el mejor del grupo | $c_2$ | 1.49618 | `--c2` |
-| Velocidad máxima | $v_{\max}$ | 20 % del ancho del dominio | `--vmax` |
-| Umbral de éxito | — | $f \le 10^{-2}$ | `--umbral` |
-| Semillas | — | 56, 57, …, 85 | `--semilla-base` |
+| Parámetro | Símbolo | Valor |
+|---|---|---|
+| Número de partículas | $N$ | 50 |
+| Iteraciones | $T$ | 100 |
+| Peso de inercia | $w$ | 0.9 |
+| Peso hacia su mejor punto | $c_1$ | 0.5 |
+| Peso hacia el mejor del grupo | $c_2$ | 0.3 |
+| Umbral de éxito | — | $f \le 10^{-2}$ |
+| Semillas | — | 56, 57, …, 85 |
 
-*Fuente:* elaboración propia; valores por defecto de `src/parte1/p3_pso_experimentos.py`.
+*Fuente:* elaboración propia; valores de `src/parte1/main.py`.
+
+<!-- Pendiente: confirmar con el equipo de dónde salen w = 0.9, c1 = 0.5 y c2 = 0.3 para citarlo. -->
+
+Con estos valores, la inercia pesa mucho más que la atracción hacia los mejores puntos ($w = 0.9$ frente a $c_1 = 0.5$ y $c_2 = 0.3$). Eso hace que las partículas sigan moviéndose bastante y exploren, pero les cuesta quedarse quietas afinando cerca del mínimo. Este detalle se nota en los resultados de la sección 6.
 
 ## 4. Conteo de evaluaciones
 
-PSO evalúa $f$ una vez por partícula al empezar y una vez por partícula en cada iteración:
+PySwarms evalúa $f$ en todas las partículas al comienzo de cada iteración y después las mueve. La posición a la que llegan con el último movimiento ya no se evalúa. Por eso:
 
 $$
-\text{evaluaciones de } f = N\,(T + 1) = 50 \times 101 = 5050, \qquad \text{evaluaciones de } \nabla f = 0.
+\text{evaluaciones de } f = N \times T = 50 \times 100 = 5000, \qquad \text{evaluaciones de } \nabla f = 0.
 $$
 
-El código cuenta las evaluaciones con un contador propio y revisa en cada corrida que el número coincida con esta fórmula. Para comparar con el descenso por gradiente usamos la equivalencia del enunciado: calcular $\nabla f$ por diferencias centrales en dimensión $n$ cuesta $2n$ evaluaciones de $f$.
+Contamos las evaluaciones con los contadores de `src/parte1/funciones.py`, que suman uno cada vez que se llama la función, y el resultado coincide con esta fórmula en todas las corridas. Para comparar con el descenso por gradiente usamos la equivalencia del enunciado: calcular $\nabla f$ por diferencias centrales en dimensión $n$ cuesta $2n$ evaluaciones de $f$.
 
 ## 5. Cómo hicimos los experimentos
 
-Usamos los mismos dominios que el resto del equipo: Rosenbrock en $[-2, 2]^n$ y Schwefel en $[-500, 500]^n$, con $n = 2$ y $n = 3$. Para cada caso hicimos 30 corridas con semillas fijas de 56 a 85. Contamos una corrida como exitosa si terminó con $f \le 10^{-2}$. En Schwefel este umbral funciona bien, porque el siguiente mínimo local queda 118.44 por encima del global, así que no hay forma de confundirlos.
+Usamos los mismos dominios que en los demás métodos: Rosenbrock en $[-2, 2]^n$ y Schwefel en $[-500, 500]^n$, con $n = 2$ y $n = 3$. Para cada caso hicimos 30 corridas con semillas fijas de 56 a 85, y contamos una corrida como exitosa si terminó con $f \le 10^{-2}$.
 
-Para repetir todo:
+Para repetir todos los experimentos de la Parte 1, incluido PSO:
 
 ```bash
-python -m src.parte1.p3_pso_experimentos
+python -m src.parte1.main --modo arnes
 ```
 
 ## 6. Resultados
@@ -96,59 +96,47 @@ La Tabla 2 resume las 30 corridas de cada caso.
 
 | Función | $n$ | Media | Desv. est. | Mejor | Peor | Mediana | Éxito | Evals. $f$ | Evals. $\nabla f$ |
 |---|---|---|---|---|---|---|---|---|---|
-| Rosenbrock | 2 | $1.17 \times 10^{-7}$ | $1.48 \times 10^{-7}$ | $2.80 \times 10^{-9}$ | $5.33 \times 10^{-7}$ | $6.19 \times 10^{-8}$ | 100.0 % | 5050 | 0 |
-| Rosenbrock | 3 | $2.86 \times 10^{-2}$ | $2.56 \times 10^{-2}$ | $9.18 \times 10^{-5}$ | $8.48 \times 10^{-2}$ | $2.28 \times 10^{-2}$ | 36.7 % | 5050 | 0 |
-| Schwefel | 2 | 47.38 | 58.02 | $2.55 \times 10^{-5}$ | 118.44 | $2.55 \times 10^{-5}$ | 60.0 % | 5050 | 0 |
-| Schwefel | 3 | 126.34 | 80.52 | $3.82 \times 10^{-5}$ | 355.32 | 118.44 | 13.3 % | 5050 | 0 |
+| Rosenbrock | 2 | $1.38 \times 10^{-4}$ | $4.51 \times 10^{-4}$ | $4.29 \times 10^{-8}$ | $2.08 \times 10^{-3}$ | $6.58 \times 10^{-6}$ | 100.0 % | 5000 | 0 |
+| Rosenbrock | 3 | $6.42 \times 10^{-2}$ | $8.60 \times 10^{-2}$ | $4.88 \times 10^{-4}$ | 0.389 | $2.62 \times 10^{-2}$ | 30.0 % | 5000 | 0 |
+| Schwefel | 2 | 0.433 | 2.00 | $2.66 \times 10^{-5}$ | 11.19 | $5.48 \times 10^{-3}$ | 56.7 % | 5000 | 0 |
+| Schwefel | 3 | 61.75 | 69.62 | $6.64 \times 10^{-4}$ | 217.53 | 8.12 | 6.7 % | 5000 | 0 |
 
-*Fuente:* elaboración propia, `results/parte1/pso/resumen.csv`. La desviación estándar es la poblacional (divide entre el número de corridas).
+*Fuente:* elaboración propia, `python -m src.parte1.main --modo arnes`. La desviación estándar es la poblacional (divide entre el número de corridas).
 
-La Figura 1 y la Figura 2 muestran cómo se mueve el enjambre en 2D. La Figura 3 compara, en una sola corrida, cuánto baja $f$ con cada método según el número de evaluaciones.
+La Figura 1 muestra cómo se mueve el enjambre sobre la función de Rosenbrock.
 
-**Figura 1.** *Movimiento del enjambre de PSO en la función de Rosenbrock (2D).*
+**Figura 1.** *Movimiento del enjambre de PSO sobre la función de Rosenbrock (2D).*
 
-![PSO en Rosenbrock](../results/parte1/gifs/pso_rosenbrock.gif)
+![PSO en Rosenbrock](../pso_rosenbrock.gif)
 
-*Fuente:* elaboración propia, `python -m src.parte1.p3_gifs` ($N = 30$, $T = 60$, semilla 56).
-
-**Figura 2.** *Movimiento del enjambre de PSO en la función de Schwefel (2D).*
-
-![PSO en Schwefel](../results/parte1/gifs/pso_schwefel.gif)
-
-*Fuente:* elaboración propia, `python -m src.parte1.p3_gifs` ($N = 30$, $T = 60$, semilla 56).
-
-**Figura 3.** *Mejor valor de $f$ según el número de evaluaciones equivalentes: descenso por gradiente frente a PSO (2D).*
-
-![Convergencia GD vs PSO](../results/parte1/gifs/convergencia_gd_vs_pso.png)
-
-*Fuente:* elaboración propia, `python -m src.parte1.p3_gifs`. Cada evaluación de $\nabla f$ de GD se cuenta como $2n = 4$ evaluaciones de $f$. La parte roja es cuando GD ya está fuera del dominio.
+*Fuente:* elaboración propia, `python -m src.parte1.main --modo gif` ($N = 50$, $T = 100$, semilla 56, región $[-2, 2] \times [-1, 3]$).
 
 ## 7. Análisis
 
-**Rosenbrock.** En 2D, PSO encontró el mínimo en las 30 corridas, con valores cercanos a $10^{-7}$ (Tabla 2). En 3D, con las mismas 5050 evaluaciones, solo el 36.7 % de las corridas pasó el umbral. Pero eso no significa que se perdiera: en promedio terminó a 0.27 del mínimo $(1, 1, 1)$, y la mediana de $f$ fue $2.3 \times 10^{-2}$. Lo que pasa es que el enjambre encuentra rápido el valle curvo de Rosenbrock, pero luego avanza muy lento dentro de él. El valle es muy angosto y casi plano a lo largo, y con una dimensión más y las mismas partículas no le alcanzan las evaluaciones para llegar al fondo.
+**Rosenbrock.** En 2D, PSO encontró el mínimo en las 30 corridas (Tabla 2). En 3D, con el mismo número de evaluaciones, solo el 30 % pasó el umbral. Sin embargo, el enjambre no se perdió: la mediana de $f$ fue $2.6 \times 10^{-2}$ y la distancia mediana al mínimo $(1, 1, 1)$ fue 0.31. Lo que pasa es que el enjambre encuentra rápido el valle curvo de Rosenbrock, pero luego avanza muy lento dentro de él, porque el valle es muy angosto y casi plano a lo largo. Con una dimensión más y las mismas partículas no le alcanzan las evaluaciones para llegar al fondo.
 
-**Schwefel.** Aquí pasa algo diferente. Casi todas las corridas que fallaron terminaron en un valor que es un múltiplo de 118.44: en 2D, 12 de las 30 corridas quedaron en $f = 118.44$, y en 3D hubo corridas con 118.44, 236.88 y 355.32. Hubo dos excepciones: una corrida en 3D terminó en $f = 118.61$ porque todavía estaba bajando hacia ese mismo mínimo, y otra estaba cerca del mínimo global pero con $f = 0.023$, un poco por encima del umbral.
+**Schwefel 2D.** Aquí el éxito fue de 56.7 %, pero ese número engaña un poco. Revisando las 30 corridas, en 29 el enjambre llegó a la zona del mínimo global $(420.97, 420.97)$; solo en una corrida una coordenada quedó lejos. El problema es que muchas corridas se quedaron con valores entre 0.01 y 0.6, es decir, cerca del mínimo pero sin afinar lo suficiente para pasar el umbral. Esto encaja con los parámetros de la Tabla 1: con $w = 0.9$ las partículas conservan mucha velocidad, y con $c_1$ y $c_2$ pequeños la atracción hacia el mejor punto es débil, así que el enjambre explora bien pero le cuesta quedarse quieto en el fondo del mínimo.
 
-La razón está en la forma de la función. Schwefel se puede escribir como una suma de términos, uno por cada coordenada:
+**Schwefel 3D.** Este fue el caso más difícil: solo 6.7 % de éxito. A diferencia de 2D, aquí sí hay corridas atrapadas en mínimos locales: 22 de las 90 coordenadas (30 corridas por 3 coordenadas) terminaron lejos del óptimo, y 9 de ellas estaban en $x_j \approx -302.52$. Ese punto es el segundo mejor mínimo de cada coordenada. Como Schwefel es una suma de un término por coordenada,
 
 $$
-f(\mathbf{x}) = \sum_{j=1}^{n} \Big(418.9829 - x_j \sin\sqrt{|x_j|}\Big).
+f(\mathbf{x}) = \sum_{j=1}^{n} \Big(418.9829 - x_j \sin\sqrt{|x_j|}\Big),
 $$
 
-Cada coordenada tiene su mínimo en $x_j \approx 420.97$, pero hay otro mínimo local en $x_j \approx -302.52$, al otro lado del dominio, que suma 118.44. Revisamos las 37 corridas que terminaron con $f > 1$, y en todas, las coordenadas que no llegaron al óptimo estaban cerca de $-302.52$ (por ejemplo, $\mathbf{x} = (420.97, -302.52)$ en 2D). Cada coordenada que se queda ahí suma 118.44. Por eso el éxito baja de 60 % en 2D a 13.3 % en 3D: con más coordenadas es más probable que alguna se quede atrapada. Esto pasa porque en esta versión de PSO todas las partículas siguen al mismo $\mathbf{g}$: si el mejor punto del grupo está en el mínimo equivocado, todo el enjambre se va hacia allá y deja de explorar, como se ve en la Figura 2.
+cada coordenada que se queda en $-302.52$ le suma 118.44 al valor final. Por eso varias corridas terminaron cerca de 118.4. Con más coordenadas es más probable que alguna se quede en el mínimo equivocado, y como todas las partículas siguen al mismo $\mathbf{g}$, si el mejor punto del grupo está en el lugar equivocado, todo el enjambre se va hacia allá.
 
-**Comparación con descenso por gradiente.** La Figura 3 muestra una corrida de cada método en 2D. En Rosenbrock, GD necesitó 8324 iteraciones (unas 33 300 evaluaciones equivalentes de $f$) para llegar a $f \approx 1.2 \times 10^{-4}$, mientras que PSO llegó a $f \approx 2.7 \times 10^{-5}$ con 1830 evaluaciones. GD es lento aquí porque la tasa de aprendizaje tiene que ser pequeña para no salirse del valle, y con pasos tan pequeños avanza muy despacio a lo largo de él. En Schwefel, GD con tasa de aprendizaje $0.1$ se salió del dominio en pocas iteraciones (parte roja) y terminó en un punto que no es válido. Y aunque se quedara dentro, GD solo puede bajar al mínimo local más cercano a donde empezó, porque Schwefel tiene muchísimos mínimos locales.
+La comparación de PSO con el descenso por gradiente, los algoritmos evolutivos y la evolución diferencial se presenta en la discusión de la Parte 1.
 
 ## 8. Limitaciones
 
-No ajustamos los parámetros del PSO para cada función; usamos los valores estándar para no favorecer a ningún método. Probablemente un enjambre más grande, o una versión en la que cada partícula solo vea a sus vecinas (*lbest*), atraparía menos veces el mínimo equivocado en Schwefel, pero gastando más evaluaciones. Además, la Figura 3 es una sola corrida y sirve para ilustrar; las conclusiones con números salen de las 30 corridas de la Tabla 2.
+No ajustamos los parámetros del PSO para cada función. Por lo visto en Schwefel 2D, probablemente un $w$ más bajo, o uno que vaya bajando durante la corrida, ayudaría a afinar mejor al final. También es posible que un enjambre más grande se quede menos veces atrapado en Schwefel 3D, pero gastando más evaluaciones. Además, la Figura 1 es una sola corrida y sirve para ilustrar; las conclusiones con números salen de las 30 corridas de la Tabla 2.
 
 ## Referencias
 
-<!-- Verificadas el 13/10/2026: las tres existen y los datos coinciden. -->
-
-Clerc, M., & Kennedy, J. (2002). The particle swarm – Explosion, stability, and convergence in a multidimensional complex space. *IEEE Transactions on Evolutionary Computation, 6*(1), 58–73. https://doi.org/10.1109/4235.985692
+<!-- Las tres referencias fueron verificadas el 13/10/2026. -->
 
 Kennedy, J., & Eberhart, R. (1995). Particle swarm optimization. En *Proceedings of ICNN'95 – International Conference on Neural Networks* (Vol. 4, pp. 1942–1948). IEEE. https://doi.org/10.1109/ICNN.1995.488968
+
+Miranda, L. J. V. (2018). PySwarms: A research toolkit for particle swarm optimization in Python. *Journal of Open Source Software, 3*(21), 433. https://doi.org/10.21105/joss.00433
 
 Shi, Y., & Eberhart, R. (1998). A modified particle swarm optimizer. En *1998 IEEE International Conference on Evolutionary Computation Proceedings* (pp. 69–73). IEEE. https://doi.org/10.1109/ICEC.1998.699146
