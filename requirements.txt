@@ -1,9 +1,9 @@
 numpy==2.4.4
 scipy==1.17.1
 matplotlib==3.10.8
-pandas
+pandas==3.0.6
 requests==2.33.1
 pytest==9.1.1
-pyswarms
-ipython
-pillow
+pyswarms==1.3.0
+ipython==9.17.1
+pillow==12.3.0

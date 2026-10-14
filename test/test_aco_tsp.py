@@ -8,7 +8,7 @@ import pathlib
 import sys
 import numpy as np
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src" / "parte2"))
 from aco_tsp import CONFIG, load_problem, nearest_neighbor, run_aco, tour_cost
 
 

@@ -5,7 +5,7 @@ import sys
 
 import numpy as np
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src" / "parte2"))
 from ga_tsp import (CONFIG, inversion_mutation, load_problem, nearest_neighbor,  # noqa: E402
                     order_crossover, run_ga, tour_cost)
 

@@ -42,8 +42,8 @@ Requiere **Python 3.11 o superior** (probado con Python 3.12).
 1. Clonar el repositorio y entrar a la carpeta:
 
    ```bash
-   git clone https://github.com/USUARIO/trabajo1-tsp-espana.git
-   cd trabajo1-tsp-espana
+   git clone https://github.com/angomezz/RedesNeuronales_Trabajo1.git
+   cd RedesNeuronales_Trabajo1
    ```
 
 2. Crear y activar un entorno virtual:
@@ -66,18 +66,37 @@ Requiere **Python 3.11 o superior** (probado con Python 3.12).
 
 Todos los comandos se ejecutan desde la raíz del repositorio.
 
-### Algoritmo genético para el TSP
+### Parte 1: optimización numérica
+
+Corrida de demostración (menos de 2 minutos); el algoritmo, la función, la dimensión y los hiperparámetros se cambian desde la línea de comandos:
+
+```bash
+python -m src.parte1.main --modo demo --algoritmo pso --funcion schwefel --dim 2
+python -m src.parte1.main --modo demo --algoritmo pso --popsize 100 --iteraciones 200 --w 0.7
+python -m src.parte1.main --modo demo --algoritmo gd --funcion rosenbrock --learning_rate 0.001
+```
+
+Arnés de 30 corridas por algoritmo, función y dimensión, y GIF de GD y PSO:
+
+```bash
+python -m src.parte1.main --modo arnes --runs 30 --guardar_csv results/arnes.csv
+python -m src.parte1.main --modo gif
+```
+
+Todas las opciones se ven con `python -m src.parte1.main --help`.
+
+### Parte 2: algoritmo genético para el TSP
 
 Con ciudades sintéticas (las mismas del notebook visto en clase):
 
 ```bash
-python scripts/ga_tsp.py --seed 56 --n_cities 40 --pop 200 --gens 500 --no-show
+python src/parte2/ga_tsp.py --seed 56 --n_cities 40 --pop 200 --gens 500 --no-show
 ```
 
 Con la matriz de costos real, cuando esté disponible en `data/`:
 
 ```bash
-python scripts/ga_tsp.py --matrix data/cost_matrix.csv --pop 300 --gens 800 --no-show
+python src/parte2/ga_tsp.py --matrix data/cost_matrix.csv --pop 300 --gens 800 --no-show
 ```
 
 Parámetros que se pueden cambiar sin editar el código:
@@ -105,13 +124,13 @@ de evaluaciones, y una imagen con el recorrido y la curva de convergencia.
 Con ciudades sintéticas:
 
 ```bash
-python scripts/aco_tsp.py --seed 56 --n_cities 40 --ants 40 --iters 100 --no-show
+python src/parte2/aco_tsp.py --seed 56 --n_cities 40 --ants 40 --iters 100 --no-show
 ```
 
 Con la matriz de costos real de España y generación de GIF animado sobre el mapa:
 
 ```bash
-python scripts/aco_tsp.py --matrix data/cost_matrix.csv --coords data/coordinates.csv --ants 47 --iters 80 --gif --no-show
+python src/parte2/aco_tsp.py --matrix data/cost_matrix.csv --coords data/coordinates.csv --ants 47 --iters 80 --gif --no-show
 ```
 
 Parámetros que se pueden cambiar sin editar el código:
@@ -138,7 +157,7 @@ Parámetros que se pueden cambiar sin editar el código:
 Ejecuta el análisis de sensibilidad y genera gráficos de trade-off y descomposición de costos:
 
 ```bash
-python scripts/study_hourly_value.py --no-show
+PYTHONPATH=src/parte2 python src/parte2/study_hourly_value.py --no-show
 ```
 
 ### Arnés de 30 corridas independientes (ACO)
@@ -146,7 +165,7 @@ python scripts/study_hourly_value.py --no-show
 Ejecuta las 30 corridas con semillas del 1 al 30 y reporta tabla estadística completa:
 
 ```bash
-python scripts/benchmark_aco_30.py --hourly-value 20.0
+PYTHONPATH=src/parte2 python src/parte2/benchmark_aco_30.py --hourly-value 20.0
 ```
 
 ### Coordenadas de las 47 ciudades
@@ -207,5 +226,5 @@ Esta documentación permite evidenciar el análisis crítico de las respuestas g
 - [x] GIF del recorrido sobre el mapa de España (`results/spain_tsp_aco.gif`) (P5)
 - [x] Arnés de 30 corridas independientes con estadísticas y tasa de éxito (P5)
 - [x] Cacería de la alucinación documentada para P5 (`docs/caceria_alucinacion_p5.md`)
-- [ ] Parte 1 (gradiente, evolutivos, PSO y evolución diferencial)
+- [x] Parte 1 (gradiente, evolutivos, PSO y evolución diferencial)
 - [ ] Reporte técnico y bibliografía final integrados
