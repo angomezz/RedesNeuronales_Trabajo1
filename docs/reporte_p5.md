@@ -26,7 +26,7 @@ donde:
 - $P_{ij}$ es el **costo de peajes en autopista** (€), actualizado conforme a la red de concesiones vigente en 2026 (SEOPAN / MITMA).
 - $D_{ij}$ es la **distancia por carretera** en kilómetros ($D_{ij} = d_{\text{haversine}}(i, j) \times 1.28$).
 - $C_{\text{veh}} = 5.6\text{ L/100 km}$ es el consumo combinado homologado bajo ciclo WLTP del vehículo seleccionado (**SEAT León 1.5 TSI 130 CV**).
-- $P_{\text{comb}} = 1.62\text{ \euro{}/L}$ es el precio medio de referencia de la Gasolina 95 E5 en estaciones de servicio peninsulares (MITECO).
+- $P_{\text{comb}} = 1.62\text{ €/L}$ es el precio medio de referencia de la Gasolina 95 E5 en estaciones de servicio peninsulares (MITECO).
 
 ---
 
@@ -83,14 +83,14 @@ En estricto cumplimiento con la regla de comparación justa:
 ### 3.1 Planteamiento y Pregunta de Investigación
 > *¿Cambia la ruta óptima al variar el valor de la hora? ¿A partir de qué valor cambia?*
 
-Se ejecutó un barrido paramétrico sobre $V_h \in \{0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100\}\text{ \euro{}/h}$.
+Se ejecutó un barrido paramétrico sobre $V_h \in \{0, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100\}\text{ €/h}$.
 
 ### 3.2 Resultados y Discusión del Comportamiento Logístico
-1. **Régimen de bajo costo horario ($V_h \le 15\text{ \euro{}/h}$):**
+1. **Régimen de bajo costo horario ($V_h \le 15\text{ €/h}$):**  
    El costo está dominado por el combustible y los peajes. El algoritmo prioriza la distancia mínima estricta y evita carreteras que impongan peajes adicionales.
-2. **Punto crítico de cambio de ruta ($V_h^* \ge 20 - 25\text{ \euro{}/h}$):**
-   A partir de $V_h = 20.0\text{ \euro{}/h}$, el costo temporal $(V_h \times T_{ij})$ supera el ahorro de combustible en desvíos lentos. La topología del circuito muta: se asumen tramos de mayor velocidad de crucero en autopistas/autovías de alta capacidad para reducir el tiempo total acumulado de viaje.
-3. **Régimen de alto costo horario ($V_h \ge 50\text{ \euro{}/h}$):**
+2. **Punto crítico de cambio de ruta ($V_h^* \ge 20 \text{ a } 25\text{ €/h}$):**  
+   A partir de $V_h = 20.0\text{ €/h}$, el costo temporal $(V_h \times T_{ij})$ supera el ahorro de combustible en desvíos lentos. La topología del circuito muta: se asumen tramos de mayor velocidad de crucero en autopistas/autovías de alta capacidad para reducir el tiempo total acumulado de viaje.
+3. **Régimen de alto costo horario ($V_h \ge 50\text{ €/h}$):**  
    El tiempo se convierte en la componente hiperdominante (representando más del 70% del costo total). La ruta se optimiza prioritariamente para minimizar la duración del trayecto.
 
 ---
