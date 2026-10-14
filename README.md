@@ -4,6 +4,10 @@ Curso Redes neuronales y algoritmos bioinspirados
 Universidad Nacional de Colombia, Facultad de Minas 
 Departamento de Ciencias de la Computación y de la Decisión · Semestre 2026-02.
 
+## Reporte técnico (entrada de blog)
+
+**[Leer el reporte completo](blog/README.md)**
+
 ## Descripción
 
 - **Parte 1 (optimización numérica):** comparación del descenso por gradiente con métodos
