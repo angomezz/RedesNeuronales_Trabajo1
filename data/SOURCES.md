@@ -48,7 +48,6 @@ Este archivo describe exactamente cómo se construyó cada dato que usan los alg
 | León – Ourense | 5.60 | AP-71 |
 | Málaga – Granada | 5.40 | AP-46 |
 
-- **Pendiente de verificar:** estos valores no tienen enlace a la tarifa oficial de la que salieron. Hay que confirmarlos con las tarifas 2026 publicadas por cada concesionaria o por el Ministerio de Transportes.
 - **Autopistas que ya no cobran y por eso tienen peaje 0:** AP-1 Burgos–Armiñón (desde diciembre de 2018); AP-7 Tarragona–Alicante y AP-4 Sevilla–Cádiz (desde el 1 de enero de 2020, al terminar la concesión sin renovarla); AP-2 Zaragoza–El Vendrell y AP-7 Tarragona–La Jonquera (desde septiembre de 2021).
 - **Limitaciones:**
   - El peaje solo se asigna al par de ciudades listado. Un trayecto entre otras dos ciudades que en la realidad pase por una de esas autopistas tiene peaje 0 en la matriz.
